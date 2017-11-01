@@ -1,0 +1,9 @@
+{
+  "name": "vncp2ptunnel",
+  "version": "${FBSTRING_PLUGIN_VERSION}",
+  "description": "a p2p tunnel for vnc access",
+
+	"plugins": [
+    { "path": "npvncp2ptunnel.dll", "public": true }
+  ]
+}
