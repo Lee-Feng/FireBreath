@@ -12,6 +12,7 @@ License:    Dual license model; choose one of two:
 Copyright 2009 PacketPass Inc, Georg Fritzsche,
                Firebreath development team
 \**********************************************************/
+#pragma  once
 
 #include <string>
 #include <sstream>
@@ -44,6 +45,9 @@ public:
 
 	// 获取最近一次错误信息
 	std::string getError();
+
+	// 获取版本描述
+	std::string getVersion();
 
 private:
     bool m_inited;

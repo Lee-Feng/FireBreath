@@ -37,6 +37,7 @@ ProxyPeerAPI::ProxyPeerAPI(const FB::BrowserHostPtr& host) : m_host(host),m_init
 	registerMethod("isClientConnected",  make_method(this, &ProxyPeerAPI::isClientConnected));
 	registerMethod("isConnectedToPeer",  make_method(this, &ProxyPeerAPI::isConnectedToPeer));
 	registerMethod("getError",  make_method(this, &ProxyPeerAPI::getError));
+	registerMethod("getVersion",  make_method(this, &ProxyPeerAPI::getVersion));
 }
 
 ProxyPeerAPI::~ProxyPeerAPI()
@@ -180,4 +181,9 @@ bool ProxyPeerAPI::isConnectedToPeer(const std::string& peerid)
 		return false;
 	}
 	return proxy_is_peer_connected(m_myid.c_str(),peerid.c_str()) ? true : false;
+}
+
+std::string ProxyPeerAPI::getVersion()
+{
+	return "ProxyPeerAPI_1.0.0";
 }

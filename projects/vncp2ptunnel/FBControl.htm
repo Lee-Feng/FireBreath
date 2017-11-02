@@ -6,11 +6,14 @@
 <title>test page for object fbcontrol</title>
 </head>
     <script type="text/javascript">
+		var forward_peer;
+		var proxy_peer;
         function plugin0()
         {
             return document.getElementById('plugin0');
         }
         plugin = plugin0;
+		setInterval("onTimmer()", 500); 
         function addEvent(obj, name, func)
         {
             if (obj.attachEvent) {
@@ -27,35 +30,210 @@
             });
         }
         function pluginLoaded() {
-            alert("Plugin loaded!");
+            //alert("Plugin loaded!");
+			document.getElementById("plugin_state").style.color="green"; 
+			document.getElementById("plugin_state").innerText = "插件加载成功";
         }
         
         function createForwardAPI()
         {
             var fwd = plugin().createForwardAPI();
-			
+			alert(fwd.getVersion());
         }
         
         function createProxyAPI()
         {
-            var fwd = plugin().createProxyAPI();
+            var pxy = plugin().createProxyAPI();
+			alert(pxy.getVersion());
         }
         
         function testHello()
         {
             if(plugin().valid){
-                alert(plugin().hello("This plugin seems to be working!"));
+                alert(plugin().hello(document.getElementById("hello_input").value));
             } else {
                 alert("Plugin is not working :(");
             }
         }
+		
+		function createForwardPeer()
+		{
+			forward_peer = plugin().createForwardAPI();
+			if(document.getElementById("serverip").value == "")
+			{
+				alert("请先输入服务IP");
+				return;
+			}
+			if(document.getElementById("serverport").value == "")
+			{
+				alert("请先输入服务端口");
+				return;
+			}
+			if(document.getElementById("fwdip").value == "")
+			{
+				alert("请先输入转发的目标IP");
+				return;
+			}
+			if(document.getElementById("fwdport").value == "")
+			{
+				alert("请先输入转发的目标端口");
+				return;
+			}
+			var ret = forward_peer.init(document.getElementById("serverip").value,
+				document.getElementById("serverport").value,
+				document.getElementById("fwdip").value,
+				document.getElementById("fwdport").value);
+			if(!ret)
+			{
+				alert("创建失败,"+forward_peer.getError())
+			}
+			
+			document.getElementById("fwdid").innerText = forward_peer.getMyID();
+			//alert("创建成功,ID:"+forward_peer.getMyID())
+		}
+		function createProxyPeer()
+		{
+			proxy_peer = plugin().createProxyAPI();
+			if(document.getElementById("serverip").value == "")
+			{
+				alert("请先输入服务IP");
+				return;
+			}
+			if(document.getElementById("serverport").value == "")
+			{
+				alert("请先输入服务端口");
+				return;
+			}
+			if(document.getElementById("bindport").value == "")
+			{
+				alert("请先输入本地监听端口");
+				return;
+			}
+			var ret = proxy_peer.init(document.getElementById("serverip").value,
+				document.getElementById("serverport").value,
+				document.getElementById("bindport").value);
+			if(!ret)
+			{
+				alert("创建失败,"+proxy_peer.getError())
+			}
+			
+			document.getElementById("proxyid").innerText = proxy_peer.getMyID();
+			document.getElementById("bindport").value = proxy_peer.getBindPort();
+		}
+		
+		function doConnect()
+		{
+			if(document.getElementById("peerid").value == "")
+			{
+				alert("请先输入要连接的对方ID");
+				return;
+			}
+			
+			var ret = proxy_peer.makeP2pTunnel(document.getElementById("peerid").value);
+			if(!ret)
+			{
+				alert("建立P2P连接失败："+proxy_peer.getError());
+				return;
+			}
+			document.getElementById("connect_peer_state").innerText = "连接中";
+		}
+		
+		function onTimmer()
+		{
+			if(proxy_peer != undefined)
+			{
+				if(proxy_peer.isClientConnected())
+				{
+					document.getElementById("connect_client_state").innerText = "有客户端连接上";
+				}
+				else
+				{
+					document.getElementById("connect_client_state").innerText = "";
+				}
+				
+				if(document.getElementById("peerid").value != "")
+				{
+					if(proxy_peer.isConnectedToPeer(document.getElementById("peerid").value))
+					{
+						document.getElementById("connect_peer_state").innerText = "连接上了:" + document.getElementById("peerid").value;
+					}
+					else
+					{
+						document.getElementById("connect_peer_state").innerText = "";
+					}
+				}
+			}
+			if(forward_peer != undefined)
+			{
+				if(forward_peer.isConnectedToHost())
+				{
+					document.getElementById("connect_host_state").innerText = "连上了转发服务器";
+				}
+				else
+				{
+					document.getElementById("connect_client_state").innerText = "";
+				}
+				
+				/*
+				if(document.getElementById("peerid").value != "")
+				{
+				
+					if(forward_peer.isConnectedToPeer(document.getElementById("peerid").value))
+					{
+						document.getElementById("fwd_connect_peer_state").innerText = "连接上了:" + document.getElementById("peerid").value;
+					}
+					else
+					{
+						document.getElementById("fwd_connect_peer_state").innerText = "";
+					}
+					
+				}
+				*/
+			}
+		}
     </script>
 <body onload="load()">
-<object id="plugin0" type="application/x-vncp2ptunnel" width="300" height="300">
+<object id="plugin0" type="application/x-vncp2ptunnel" width="0" height="0">
     <param name="onload" value="pluginLoaded" />
 </object><br />
-    
+
+
+<label id="plugin_state"></label><br/>
+
+==========================================================<br/>
+下面是测试调用插件方法是否可行<br/>
+输入打招呼的文字：<br/>
+<input type="text" id = "hello_input" />
 <a href="#" onclick="javascript:testHello()">testHello</a> <br />
+<br />
+
+==========================================================<br/>
+下面是测试建立P2P通信，对于A访问B的情况，A端需要创建一个ProxyPeer,B端需要创建一个ForwardPeer，两端的Peer都需要指定同一个公网服务器IP和端口<br/>
+<br/>
+<b>第一步，指定服务器的IP和端口(注意IP不能用回环地址)</b><br/>
+IP地址：<input type="text" id="serverip" value = "192.168.0.8" /> 端口:<input type="text" id="serverport" value = "61111"/><br/>
+<br/>
+<b>第二步，创建对应的Peer对象</b><br/>
+创建ForwardPeer:<br/>
+转发的目的IP：<input type="text" id = "fwdip" value = "127.0.0.1" /><br/>
+转发的目的端口：<input type="text" id = "fwdport" value = "5900" /><br/>
+当前ID：<label id="fwdid"></label><br/>
+<input type="submit" value = "第一步：创建ForwardPeer" onclick = "javascript:createForwardPeer()"/><br/>
+当前连接Peer状态：<label id="fwd_connect_peer_state"></label><br/>
+当前与目标服务器连接状态：<label id="connect_host_state"></label><br/>
+<br/>
+创建ProxyPeer:<br/>
+监听端口：<input type="text" id = "bindport" value = "8000" /><br/>
+当前ID：<label id="proxyid"></label><br/>
+<input type="submit" value = "第一步：创建ProxyPeer" onclick = "javascript:createProxyPeer()"/> <br/>
+对方ID：<input type="text" id = "peerid" /> <br/>
+<input type="submit" value = "第二步：连接" onclick = "javascript:doConnect()"/> <br/>
+当前连接Peer状态：<label id="connect_peer_state">未连接</label><br/>
+当前客户端连接状态：<label id="connect_client_state"></label><br/>
+<br/>
+<br/>
+
+
 <a href="#" onclick="javascript:createForwardAPI()">createForwardAPI</a> <br />
 <a href="#" onclick="javascript:createProxyAPI()">createProxyAPI</a> <br />
 </body>

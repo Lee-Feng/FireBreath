@@ -36,6 +36,7 @@ ForwardPeerAPI::ForwardPeerAPI(const FB::BrowserHostPtr& host) : m_host(host),m_
     registerMethod("isConnectedToHost",  make_method(this, &ForwardPeerAPI::isConnectedToHost));
     registerMethod("isConnectedToPeer",  make_method(this, &ForwardPeerAPI::isConnectedToPeer));
 	registerMethod("getError",  make_method(this, &ForwardPeerAPI::getError));
+	registerMethod("getVersion",  make_method(this, &ForwardPeerAPI::getVersion));
 }
 
 ForwardPeerAPI::~ForwardPeerAPI()
@@ -139,4 +140,9 @@ bool ForwardPeerAPI::isConnectedToPeer(const std::string& peerid)
 std::string ForwardPeerAPI::getError()
 {
 	return m_lasterror;
+}
+
+std::string ForwardPeerAPI::getVersion()
+{
+	return "ForwardPeerAPI_1.0.0";
 }

@@ -10,6 +10,8 @@
 #include "JSAPIAuto.h"
 #include "BrowserHost.h"
 #include "vncp2ptunnel.h"
+#include "ForwardPeerAPI.h"
+#include "ProxyPeerAPI.h"
 
 #ifndef H_vncp2ptunnelAPI
 #define H_vncp2ptunnelAPI
