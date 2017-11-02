@@ -10,6 +10,9 @@
 #include "global/config.h"
 
 #include "vncp2ptunnelAPI.h"
+#include "ForwardPeerAPI.h"
+#include "ProxyPeerAPI.h"
+#include "ProxyManagerWinMigrate/ProxyManagerWinMigrate.hpp"
 
 ///////////////////////////////////////////////////////////////////////////////
 /// @fn FB::variant vncp2ptunnelAPI::echo(const FB::variant& msg)
@@ -67,4 +70,15 @@ void vncp2ptunnelAPI::testEvent()
 std::string vncp2ptunnelAPI::hello(const std::string& hi)
 {
 	return hi + ":from C++";
+}
+
+
+
+ForwardPeerAPIPtr vncp2ptunnelAPI::createForwardAPI()
+{
+	return boost::make_shared<ForwardPeerAPI>(m_host);
+}
+ProxyPeerAPIPtr vncp2ptunnelAPI::createProxyAPI()
+{
+	return boost::make_shared<ProxyPeerAPI>(m_host);
 }

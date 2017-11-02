@@ -14,6 +14,10 @@
 #ifndef H_vncp2ptunnelAPI
 #define H_vncp2ptunnelAPI
 
+
+FB_FORWARD_PTR(ForwardPeerAPI);
+FB_FORWARD_PTR(ProxyPeerAPI);
+
 class vncp2ptunnelAPI : public FB::JSAPIAuto
 {
 public:
@@ -34,6 +38,8 @@ public:
         registerMethod("echo",      make_method(this, &vncp2ptunnelAPI::echo));
         registerMethod("testEvent", make_method(this, &vncp2ptunnelAPI::testEvent));
 		registerMethod("hello", make_method(this, &vncp2ptunnelAPI::hello));
+		registerMethod("createForwardAPI", make_method(this, &vncp2ptunnelAPI::createForwardAPI));
+		registerMethod("createProxyAPI", make_method(this, &vncp2ptunnelAPI::createProxyAPI));
         
         // Read-write property
         registerProperty("testString",
@@ -78,6 +84,10 @@ public:
 	// test
 	std::string hello(const std::string& hi);
 
+	// 创建一个forwardapi对象，用于实现forward相关控制
+	ForwardPeerAPIPtr createForwardAPI();
+	// 创建一个proxyapi对象，用于实现forward相关控制
+	ProxyPeerAPIPtr createProxyAPI();
 
 private:
     vncp2ptunnelWeakPtr m_plugin;

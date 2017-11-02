@@ -40,6 +40,23 @@ public:
     {
         vncp2ptunnel::StaticDeinitialize();
     }
+
+
+	// Example
+	FB::Log::LogLevel getLogLevel(){
+		return FB::Log::LogLevel_Trace;
+	}
+
+	void getLoggingMethods( FB::Log::LogMethodList& outMethods )
+	{
+		// The next line will enable logging to the console (think: printf).
+		outMethods.push_back(std::make_pair(FB::Log::LogMethod_Console, std::string()));
+
+		// The next line will enable logging to a logfile.
+		outMethods.push_back(std::make_pair(FB::Log::LogMethod_File, "vncp2ptunnel.log"));
+
+		// Obviously, if you use both lines, you will get output on both sinks.
+	}
 };
 
 ///////////////////////////////////////////////////////////////////////////////
