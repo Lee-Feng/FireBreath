@@ -49,20 +49,14 @@ target_link_libraries(${PROJECT_NAME}
     ${PLUGIN_INTERNAL_DEPS}
     )
 
-# add my libs
-# set lib name, we will auto add debug lib as LibName_d.lib, and add relese lib as LibName.lib.
-set(MY_LIBS
-	ProxyManagerWinMigrate
-)
-set(MY_LINK_LIST "")
-foreach(x ${MY_LIBS})
-
-	#include是相对FireBreath1.7\projects\${PROJECT_NAME}\目录的
-	include_directories(../../../lib/${x}/Windows/include)
-	#lib是相对${PROJECT_NAME}.sln的。
-	list (APPEND MY_LINK_LIST debug ../../../../lib/${x}/Windows/lib/${x}_d optimized ../../../../lib/${x}/Windows/lib/${x})
-endforeach()
-target_link_libraries(${PROJECT_NAME} ${MY_LINK_LIST} )	
+#设置公共的导出位置
+#设置exe和dll
+#set(CMAKE_RUNTIME_OUT_PUT_DIRECTORY ../../../../bin/WinDebug/)
+#设置so文件
+#set(CMAKE_LIBRARY_OUT_PUT_DIRECTORY ../../../../bin/WinDebug/)
+#设置lib,.a文件
+#set(CMAKE_ARCHIVE_OUT_PUT_DIRECTORY ../../../../bin/WinDebug/)
+#set_target_properties(${PROJECT_NAME} PROPERTIES  RUNTIME_OUT_PUT_DIRECTORY ../../../../bin/Win${CONFIG}/)
 
 	
 set(WIX_HEAT_FLAGS
