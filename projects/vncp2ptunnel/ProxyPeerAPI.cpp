@@ -123,7 +123,7 @@ void ProxyPeerAPI::destory()
 
 // 创建p2p通道，成功返回true，否非返回false
 // 如果创建失败可以通过getError获取错误原因
-bool ProxyPeerAPI::makeP2pTunnel(const std::string& fwd_peer_id)
+bool ProxyPeerAPI::makeP2pTunnel(const std::string& tunnel_type,const std::string& fwd_peer_id)
 {
 	if(!m_inited || m_myid.empty())
 	{
@@ -133,7 +133,7 @@ bool ProxyPeerAPI::makeP2pTunnel(const std::string& fwd_peer_id)
 	}
 
 	string_result rlt;
-	if(!proxy_make_p2p_tunnel(m_myid.c_str(),fwd_peer_id.c_str(),&rlt))
+	if(!proxy_make_p2p_tunnel(tunnel_type.c_str(),m_myid.c_str(),fwd_peer_id.c_str(),&rlt))
 	{
 		m_lasterror = rlt.result;
 		FBLOG_ERROR(__FUNCTION__, m_lasterror.c_str());

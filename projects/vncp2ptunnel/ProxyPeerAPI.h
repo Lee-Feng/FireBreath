@@ -43,7 +43,7 @@ public:
 
 	// 创建p2p通道，成功返回true，否非返回false
 	// 如果创建失败可以通过getError获取错误原因
-	bool makeP2pTunnel(const std::string& fwd_peer_id);
+	bool makeP2pTunnel(const std::string& tunnel_type,const std::string& fwd_peer_id);
 
 	// 关闭与指定peer的通道
 	void closeP2pTunnel(const std::string& fwd_peer_id);
